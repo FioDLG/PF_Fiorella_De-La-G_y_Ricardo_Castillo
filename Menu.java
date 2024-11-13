@@ -26,13 +26,13 @@ public class Menu extends JFrame {
 
         // Personalizar los botones (opcional)
         reservarButton.setBackground(new Color(243, 212, 142));
-        reservarButton.setForeground(Color.WHITE);
+        reservarButton.setForeground(Color.BLACK);
         agregarVueloButton.setBackground(new Color(243, 212, 142));
-        agregarVueloButton.setForeground(Color.WHITE);
+        agregarVueloButton.setForeground(Color.BLACK);
         verReservacionesButton.setBackground(new Color(243, 212, 142));
-        verReservacionesButton.setForeground(Color.WHITE);
+        verReservacionesButton.setForeground(Color.BLACK);
         eliminarReservacionButton.setBackground(new Color(243, 212, 142));
-        eliminarReservacionButton.setForeground(Color.WHITE);
+        eliminarReservacionButton.setForeground(Color.BLACK);
 
         // Agregar los botones al panel de fondo
         gbc.gridx = 0;
