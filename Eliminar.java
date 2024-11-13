@@ -3,21 +3,22 @@ import java.awt.*;
 import java.sql.*;
 
 public class Eliminar extends JFrame {
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/villamoncouer";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/reservas_villa_mon_coeur";
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "Chimuelo1514.";
+    private static final String DB_PASSWORD = "myrf0424";
 
     public Eliminar() {
         setTitle("Eliminar Reservación");
         setSize(500, 200);
         setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBackground(new Color(245, 245, 220));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
 
-        JLabel idLabel = new JLabel("Numero de la Reservación:");
+        JLabel idLabel = new JLabel("Número de la Reservación:");
         gbc.gridx = 0;
         gbc.gridy = 0;
         panel.add(idLabel, gbc);
@@ -35,8 +36,12 @@ public class Eliminar extends JFrame {
         panel.add(eliminarButton, gbc);
 
         eliminarButton.addActionListener(e -> {
-            int id = Integer.parseInt(idField.getText());
-            eliminarReservacion(id);
+            try {
+                int id = Integer.parseInt(idField.getText());
+                eliminarReservacion(id);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Por favor, ingrese un número válido para la reservación.");
+            }
         });
 
         add(panel);
@@ -44,9 +49,10 @@ public class Eliminar extends JFrame {
 
     private void eliminarReservacion(int id) {
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            String query = "DELETE FROM reserva WHERE Nreserva = ?";
-            PreparedStatement statement = conn.prepareStatement(query);
+            String query = "{ CALL Borrar_reserva(?) }";
+            CallableStatement statement = conn.prepareCall(query);
             statement.setInt(1, id);
+
             int rowsAffected = statement.executeUpdate();
 
             if (rowsAffected > 0) {
@@ -56,8 +62,7 @@ public class Eliminar extends JFrame {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error al eliminar la reservación");
+            JOptionPane.showMessageDialog(this, "Error al eliminar la reservación: " + e.getMessage());
         }
     }
 }
-

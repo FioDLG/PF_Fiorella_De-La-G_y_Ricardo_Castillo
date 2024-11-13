@@ -1,19 +1,17 @@
 import javax.swing.*;
 import java.awt.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class InfoVuelo extends JFrame {
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/villamoncouer";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/reservas_villa_mon_coeur"; // base de datos
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "Chimuelo1514.";
+    private static final String DB_PASSWORD = "myrf0424";
 
     public InfoVuelo() {
         setTitle("Agregar Información de Vuelo");
         setSize(500, 400);
         setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBackground(new Color(245, 245, 220));
@@ -21,63 +19,110 @@ public class InfoVuelo extends JFrame {
         gbc.insets = new Insets(10, 10, 10, 10);
 
         // Campos de entrada
-        JLabel vueloLabel = new JLabel("Número de Vuelo:");
+        JLabel passportLabel = new JLabel("Número de Pasaporte:");
         gbc.gridx = 0;
         gbc.gridy = 0;
+        panel.add(passportLabel, gbc);
+
+        JTextField passportField = new JTextField(20);
+        gbc.gridx = 1;
+        panel.add(passportField, gbc);
+
+        JLabel vueloLabel = new JLabel("Número de Vuelo:");
+        gbc.gridx = 0;
+        gbc.gridy = 1;
         panel.add(vueloLabel, gbc);
 
         JTextField vueloField = new JTextField(20);
         gbc.gridx = 1;
         panel.add(vueloField, gbc);
 
-        JLabel destinoLabel = new JLabel("Destino:");
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        panel.add(destinoLabel, gbc);
-
-        JTextField destinoField = new JTextField(20);
-        gbc.gridx = 1;
-        panel.add(destinoField, gbc);
-
-        JLabel fechaLabel = new JLabel("Fecha:");
+        JLabel aerolineaLabel = new JLabel("Aerolinea:");
         gbc.gridx = 0;
         gbc.gridy = 2;
-        panel.add(fechaLabel, gbc);
+        panel.add(aerolineaLabel, gbc);
 
-        JTextField fechaField = new JTextField(20);
+        JTextField aerolineaField = new JTextField(20);
         gbc.gridx = 1;
-        panel.add(fechaField, gbc);
+        panel.add(aerolineaField, gbc);
+
+        JLabel horaLlegadaLabel = new JLabel("Hora de Llegada:");
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        panel.add(horaLlegadaLabel, gbc);
+
+        JTextField horaLlegadaField = new JTextField(20);
+        gbc.gridx = 1;
+        panel.add(horaLlegadaField, gbc);
+
+        JLabel lugarLlegadaLabel = new JLabel("Lugar de Llegada:");
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        panel.add(lugarLlegadaLabel, gbc);
+
+        JTextField lugarLlegadaField = new JTextField(20);
+        gbc.gridx = 1;
+        panel.add(lugarLlegadaField, gbc);
+
+        JLabel horaSalidaLabel = new JLabel("Hora de Salida:");
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        panel.add(horaSalidaLabel, gbc);
+
+        JTextField horaSalidaField = new JTextField(20);
+        gbc.gridx = 1;
+        panel.add(horaSalidaField, gbc);
+
+        JLabel lugarSalidaLabel = new JLabel("Lugar de Salida:");
+        gbc.gridx = 0;
+        gbc.gridy = 6;
+        panel.add(lugarSalidaLabel, gbc);
+
+        JTextField lugarSalidaField = new JTextField(20);
+        gbc.gridx = 1;
+        panel.add(lugarSalidaField, gbc);
 
         JButton agregarButton = new JButton("Agregar Vuelo");
         agregarButton.setBackground(new Color(243, 212, 142));
         agregarButton.setForeground(Color.WHITE);
-        gbc.gridy = 3;
+        gbc.gridy = 7;
         gbc.gridx = 0;
         gbc.gridwidth = 2;
         panel.add(agregarButton, gbc);
 
         agregarButton.addActionListener(e -> {
-            String vuelo = vueloField.getText();
-            String destino = destinoField.getText();
-            String fecha = fechaField.getText();
-            agregarVuelo(vuelo, destino, fecha);
+            String passport = passportField.getText();
+            int vuelo = Integer.parseInt(vueloField.getText());
+            String aerolinea = aerolineaField.getText();
+            String horaLlegada = horaLlegadaField.getText();
+            String lugarLlegada = lugarLlegadaField.getText();
+            String horaSalida = horaSalidaField.getText();
+            String lugarSalida = lugarSalidaField.getText();
+            agregarInfoVuelo(passport, vuelo, aerolinea, horaLlegada, lugarLlegada, horaSalida, lugarSalida);
         });
 
         add(panel);
     }
 
-    private void agregarVuelo(String vuelo, String destino, String fecha) {
+    private void agregarInfoVuelo(String passport, int vuelo, String aerolinea, String horaLlegada, String lugarLlegada,
+            String horaSalida, String lugarSalida) {
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            String query = "INSERT INTO vuelos (num_vuelo, destino, fecha) VALUES (?, ?, ?)";
-            PreparedStatement statement = conn.prepareStatement(query);
-            statement.setString(1, vuelo);
-            statement.setString(2, destino);
-            statement.setString(3, fecha);
+            String query = "{ CALL New_infoVuelo(?, ?, ?, ?, ?, ?, ?) }";
+            CallableStatement statement = conn.prepareCall(query);
+            statement.setString(1, passport);
+            statement.setInt(2, vuelo);
+            statement.setString(3, aerolinea);
+            statement.setString(4, horaLlegada);
+            statement.setString(5, lugarLlegada);
+            statement.setString(6, horaSalida);
+            statement.setString(7, lugarSalida);
+
             statement.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Vuelo agregado exitosamente");
+            JOptionPane.showMessageDialog(this, "Información de vuelo agregada exitosamente");
         } catch (SQLException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error al agregar el vuelo");
+            JOptionPane.showMessageDialog(this, "Error al agregar la información de vuelo");
         }
     }
+
 }

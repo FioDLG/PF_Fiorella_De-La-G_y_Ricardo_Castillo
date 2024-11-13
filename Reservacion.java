@@ -5,9 +5,9 @@ import java.awt.event.ActionListener;
 import java.sql.*;
 
 public class Reservacion extends JFrame {
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/villamoncouer";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/reservas_villa_mon_coeur";
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "Chimuelo1514.";
+    private static final String DB_PASSWORD = "myrf0424";
 
     private CardLayout cardLayout;
     private JPanel cardPanel;
@@ -147,7 +147,7 @@ public class Reservacion extends JFrame {
                 String apellido1 = apellido1Field.getText();
                 String apellido2 = apellido2Field.getText();
 
-                if (guardarReservacion(vuelo, fecha, pasaporte, nombre, nombre2, apellido1, apellido2)) {
+                if (guardarReservacion(pasaporte, nombre, nombre2, apellido1, apellido2)) {
                     JOptionPane.showMessageDialog(null, "Reservación realizada con éxito");
                 } else {
                     JOptionPane.showMessageDialog(null, "Error al realizar la reservación");
@@ -159,19 +159,19 @@ public class Reservacion extends JFrame {
         cardPanel.add(huespedPanel, "Huésped");
     }
 
-    // Método para guardar la reservación en la base de datos
-    private boolean guardarReservacion(String vuelo, String fecha, String pasaporte, String nombre, String nombre2, String apellido1, String apellido2) {
+    // Método para guardar la reservación en la base de datos usando el
+    // procedimiento almacenado
+    private boolean guardarReservacion(String pasaporte, String nombre, String nombre2, String apellido1,
+            String apellido2) {
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            String query = "INSERT INTO reservaciones (vuelo, fecha, pasaporte, nombre, nombre2, apellido1, apellido2) VALUES (?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement statement = conn.prepareStatement(query);
-            statement.setString(1, vuelo);
-            statement.setString(2, fecha);
-            statement.setString(3, pasaporte);
-            statement.setString(4, nombre);
-            statement.setString(5, nombre2);
-            statement.setString(6, apellido1);
-            statement.setString(7, apellido2);
-            statement.executeUpdate();
+            // Llamar al procedimiento almacenado 'New_reserva'
+            CallableStatement stmt = conn.prepareCall("{CALL New_reserva(?, ?, ?)}");
+            stmt.setString(1, pasaporte); // Passport
+            stmt.setInt(2, 2); // Ejemplo de cantidad de personas
+            stmt.setInt(3, 7); // Ejemplo de cantidad de días
+
+            // Ejecutar el procedimiento
+            stmt.executeUpdate();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -185,5 +185,7 @@ public class Reservacion extends JFrame {
             Reservacion hacerReservacion = new Reservacion();
             hacerReservacion.setVisible(true);
         });
+        Menu menu = new Menu();
+        menu.setVisible(true);
     }
 }

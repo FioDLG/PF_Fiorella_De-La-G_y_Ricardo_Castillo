@@ -10,8 +10,7 @@ public class Usuario extends JFrame {
     private JPanel registerPanel;
     private CardLayout cardLayout;
 
-    // Credenciales de la base de datos
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/reservas_villa_mon_coeur"; // base de datos
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/reservas_villa_mon_coeur";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "myrf0424";
 
