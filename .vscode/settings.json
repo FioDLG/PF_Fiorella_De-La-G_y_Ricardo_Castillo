@@ -1,0 +1,6 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "c:\\Users\\chimu\\Documents\\mysql-connector-java-5.1.49.jar"
+    ]
+}

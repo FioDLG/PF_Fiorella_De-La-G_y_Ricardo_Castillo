@@ -24,3 +24,28 @@ function register(){
     caja_trasera_register.style.opacity="0";
     caja_trasera_login.style.opacity="1";
 }
+
+
+document.getElementById('formulario__login').addEventListener('Entrar', function(event) {
+    event.preventDefault();
+
+    const usuario = document.getElementById('User_Name').value;
+    const password = document.getElementById('Password').value;
+
+    // Enviar los datos al servidor
+    const mysql = require('mysql');
+
+    // Configuración de la conexión a la base de datos
+    const db = mysql.createConnection({
+        host: 'localhost',
+        user: 'root',       // Tu usuario de MySQL
+        password: 'Chimuelo1514.', // Tu contraseña de MySQL
+        database: 'villamoncouer' // Nombre de la base de datos
+    });
+    
+    db.connect((err) => {
+        if (err) throw err;
+        console.log('Conectado a la base de datos MySQL');
+    });
+    
+});
