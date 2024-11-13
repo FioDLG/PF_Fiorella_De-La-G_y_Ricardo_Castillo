@@ -11,9 +11,9 @@ public class Usuario extends JFrame {
     private CardLayout cardLayout;
 
     // Credenciales de la base de datos
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/villamoncouer"; // Cambia 'login_db' por el nombre de tu base de datos
-    private static final String DB_USER = "root"; // Cambia por tu usuario de MySQL
-    private static final String DB_PASSWORD = "Chimuelo1514."; // Cambia por tu contraseña de MySQL
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/reservas_villa_mon_coeur"; // base de datos
+    private static final String DB_USER = "root";
+    private static final String DB_PASSWORD = "myrf0424";
 
     public Usuario() {
         setTitle("Login de Usuario");
@@ -213,5 +213,3 @@ public class Usuario extends JFrame {
         });
     }
 }
-
-

@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Menu extends JFrame {
-   
+
     public Menu() {
         setTitle("Menú Principal");
         setSize(800, 600);
@@ -30,7 +30,7 @@ public class Menu extends JFrame {
         gbc.gridy = 1;
         gbc.gridwidth = 2;
         menuPanel.add(btnReservar, gbc);
-        
+
         btnReservar.addActionListener(e -> {
             Reservacion hacerReservacion = new Reservacion();
             hacerReservacion.setVisible(true);
@@ -43,12 +43,11 @@ public class Menu extends JFrame {
         btnAgregarVuelo.setFocusPainted(false);
         gbc.gridy = 2;
         menuPanel.add(btnAgregarVuelo, gbc);
-        
+
         btnAgregarVuelo.addActionListener(e -> {
             InfoVuelo agregarVuelo = new InfoVuelo();
             agregarVuelo.setVisible(true);
         });
-        
 
         // Botón "Ver Reservaciones"
         JButton btnVerReservaciones = new JButton("Ver Reservaciones");
@@ -70,7 +69,7 @@ public class Menu extends JFrame {
         btnEliminarReservacion.setFocusPainted(false);
         gbc.gridy = 4;
         menuPanel.add(btnEliminarReservacion, gbc);
-        
+
         btnEliminarReservacion.addActionListener(e -> {
             Eliminar eliminarReservacion = new Eliminar();
             eliminarReservacion.setVisible(true);
@@ -79,4 +78,3 @@ public class Menu extends JFrame {
         add(menuPanel);
     }
 }
-
