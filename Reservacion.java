@@ -1,7 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.sql.*;
 
 public class Reservacion extends JFrame {
@@ -9,166 +8,84 @@ public class Reservacion extends JFrame {
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "myrf0424";
 
-    private CardLayout cardLayout;
-    private JPanel cardPanel;
-    private JTextField vueloField, fechaField;
-    private JTextField pasaporteField, nombreField, nombre2Field, apellido1Field, apellido2Field;
+    private JTextField pasaporteField, cantidadDiasField, cantidadPersonasField;
 
     public Reservacion() {
-        setTitle("Hacer Reservación");
-        setSize(600, 500);
+        setTitle("Reserva de Huesped");
+        setSize(600, 400);
         setLocationRelativeTo(null);
 
-        cardLayout = new CardLayout();
-        cardPanel = new JPanel(cardLayout);
-
-        // Crear los dos formularios (vuelo y huésped)
-        crearFormularioVuelo();
-        crearFormularioHuesped();
-
-        add(cardPanel);
-
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
-
-    private void crearFormularioVuelo() {
-        JPanel vueloPanel = new JPanel(new GridBagLayout());
+        // Panel para el formulario de reserva
+        JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
 
-        // Campos de información del vuelo
-        JLabel vueloLabel = new JLabel("Vuelo:");
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        vueloPanel.add(vueloLabel, gbc);
-
-        vueloField = new JTextField(20);
-        gbc.gridx = 1;
-        vueloPanel.add(vueloField, gbc);
-
-        JLabel fechaLabel = new JLabel("Fecha (YYYY-MM-DD):");
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        vueloPanel.add(fechaLabel, gbc);
-
-        fechaField = new JTextField(20);
-        gbc.gridx = 1;
-        vueloPanel.add(fechaField, gbc);
-
-        JButton siguienteButton = new JButton("Siguiente");
-        siguienteButton.setBackground(new Color(243, 212, 142));
-        siguienteButton.setForeground(Color.WHITE);
-        siguienteButton.setFocusPainted(false);
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 2;
-        vueloPanel.add(siguienteButton, gbc);
-
-        siguienteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cardLayout.show(cardPanel, "Huésped");
-            }
-        });
-
-        // Agregar el formulario de vuelo al CardLayout
-        cardPanel.add(vueloPanel, "Vuelo");
-    }
-
-    private void crearFormularioHuesped() {
-        JPanel huespedPanel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
-
-        // Campos de información del huésped
+        // Campos del formulario
         JLabel pasaporteLabel = new JLabel("Pasaporte:");
         gbc.gridx = 0;
         gbc.gridy = 0;
-        huespedPanel.add(pasaporteLabel, gbc);
+        panel.add(pasaporteLabel, gbc);
 
         pasaporteField = new JTextField(20);
         gbc.gridx = 1;
-        huespedPanel.add(pasaporteField, gbc);
+        panel.add(pasaporteField, gbc);
 
-        JLabel nombreLabel = new JLabel("Nombre:");
+        JLabel cantidadDiasLabel = new JLabel("Cantidad de Días:");
         gbc.gridx = 0;
         gbc.gridy = 1;
-        huespedPanel.add(nombreLabel, gbc);
+        panel.add(cantidadDiasLabel, gbc);
 
-        nombreField = new JTextField(20);
+        cantidadDiasField = new JTextField(20);
         gbc.gridx = 1;
-        huespedPanel.add(nombreField, gbc);
+        panel.add(cantidadDiasField, gbc);
 
-        JLabel nombre2Label = new JLabel("Nombre 2:");
+        JLabel cantidadPersonasLabel = new JLabel("Cantidad de Personas:");
         gbc.gridx = 0;
         gbc.gridy = 2;
-        huespedPanel.add(nombre2Label, gbc);
+        panel.add(cantidadPersonasLabel, gbc);
 
-        nombre2Field = new JTextField(20);
+        cantidadPersonasField = new JTextField(20);
         gbc.gridx = 1;
-        huespedPanel.add(nombre2Field, gbc);
+        panel.add(cantidadPersonasField, gbc);
 
-        JLabel apellido1Label = new JLabel("Apellido 1:");
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        huespedPanel.add(apellido1Label, gbc);
-
-        apellido1Field = new JTextField(20);
-        gbc.gridx = 1;
-        huespedPanel.add(apellido1Field, gbc);
-
-        JLabel apellido2Label = new JLabel("Apellido 2:");
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        huespedPanel.add(apellido2Label, gbc);
-
-        apellido2Field = new JTextField(20);
-        gbc.gridx = 1;
-        huespedPanel.add(apellido2Field, gbc);
-
-        JButton submitButton = new JButton("Hacer Reservación");
+        JButton submitButton = new JButton("Realizar Reserva");
         submitButton.setBackground(new Color(243, 212, 142));
         submitButton.setForeground(Color.WHITE);
         submitButton.setFocusPainted(false);
         gbc.gridx = 0;
-        gbc.gridy = 5;
+        gbc.gridy = 3;
         gbc.gridwidth = 2;
-        huespedPanel.add(submitButton, gbc);
+        panel.add(submitButton, gbc);
 
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Recoger los datos de los formularios
-                String vuelo = vueloField.getText();
-                String fecha = fechaField.getText();
+                // Obtener los valores ingresados por el usuario
                 String pasaporte = pasaporteField.getText();
-                String nombre = nombreField.getText();
-                String nombre2 = nombre2Field.getText();
-                String apellido1 = apellido1Field.getText();
-                String apellido2 = apellido2Field.getText();
+                int cantidadDias = Integer.parseInt(cantidadDiasField.getText());
+                int cantidadPersonas = Integer.parseInt(cantidadPersonasField.getText());
 
-                if (guardarReservacion(pasaporte, nombre, nombre2, apellido1, apellido2)) {
-                    JOptionPane.showMessageDialog(null, "Reservación realizada con éxito");
+                // Llamar al método para guardar la reserva
+                if (guardarReserva(pasaporte, cantidadDias, cantidadPersonas)) {
+                    JOptionPane.showMessageDialog(null, "Reserva realizada con éxito");
+                    cerrarVentana(); // Cerrar la ventana de reserva y abrir el menú
                 } else {
-                    JOptionPane.showMessageDialog(null, "Error al realizar la reservación");
+                    JOptionPane.showMessageDialog(null, "Error al realizar la reserva");
                 }
             }
         });
 
-        // Agregar el formulario de huésped al CardLayout
-        cardPanel.add(huespedPanel, "Huésped");
+        // Agregar el panel al JFrame
+        add(panel);
     }
 
-    // Método para guardar la reservación en la base de datos usando el
-    // procedimiento almacenado
-    private boolean guardarReservacion(String pasaporte, String nombre, String nombre2, String apellido1,
-            String apellido2) {
+    private boolean guardarReserva(String pasaporte, int cantidadDias, int cantidadPersonas) {
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             // Llamar al procedimiento almacenado 'New_reserva'
             CallableStatement stmt = conn.prepareCall("{CALL New_reserva(?, ?, ?)}");
-            stmt.setString(1, pasaporte); // Passport
-            stmt.setInt(2, 2); // Ejemplo de cantidad de personas
-            stmt.setInt(3, 7); // Ejemplo de cantidad de días
+            stmt.setString(1, pasaporte); // Pasaporte
+            stmt.setInt(2, cantidadDias); // Cantidad de días
+            stmt.setInt(3, cantidadPersonas); // Cantidad de personas
 
             // Ejecutar el procedimiento
             stmt.executeUpdate();
@@ -179,13 +96,18 @@ public class Reservacion extends JFrame {
         }
     }
 
+    // Método para cerrar la ventana y abrir el menú
+    private void cerrarVentana() {
+        this.setVisible(false); // Ocultar la ventana de reserva
+        Menu menu = new Menu(); // Crear una nueva instancia del menú
+        menu.setVisible(true); // Mostrar el menú
+    }
+
     // Método principal para ejecutar la aplicación
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            Reservacion hacerReservacion = new Reservacion();
-            hacerReservacion.setVisible(true);
+            Reservacion reserva = new Reservacion();
+            reserva.setVisible(true);
         });
-        Menu menu = new Menu();
-        menu.setVisible(true);
     }
 }

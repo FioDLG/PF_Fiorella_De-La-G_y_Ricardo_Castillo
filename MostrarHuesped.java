@@ -1,3 +1,4 @@
+
 import javax.swing.*;
 import java.awt.*;
 import java.sql.*;
@@ -6,13 +7,13 @@ import java.util.Vector;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class MostrarReservacion extends JFrame {
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/reservas_villa_mon_coeur"; // base de datos
+public class MostrarHuesped extends JFrame {
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/reservas_villa_mon_coeur";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "myrf0424";
 
-    public MostrarReservacion() {
-        setTitle("Ver Reservaciones");
+    public MostrarHuesped() {
+        setTitle("Ver Huéspedes");
         setSize(800, 400); // Ajusté el tamaño para más comodidad
         setLocationRelativeTo(null); // Centra la ventana
 
@@ -23,8 +24,8 @@ public class MostrarReservacion extends JFrame {
         panel.add(scrollPane, BorderLayout.CENTER);
         add(panel);
 
-        // Mostrar las reservaciones en la tabla
-        mostrarReservaciones(table);
+        // Mostrar los huéspedes en la tabla
+        mostrarHuespedes(table);
 
         // Agregar el listener para cerrar la ventana y abrir el menú
         addWindowListener(new WindowAdapter() {
@@ -35,19 +36,21 @@ public class MostrarReservacion extends JFrame {
         });
     }
 
-    private void mostrarReservaciones(JTable table) {
+    private void mostrarHuespedes(JTable table) {
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            // Llamar al procedimiento almacenado 'Mostrar_reserva_infovuelo'
-            CallableStatement stmt = conn.prepareCall("{CALL Mostrar_reserva_infovuelo()}");
+            // Llamar al procedimiento almacenado o realizar una consulta simple para
+            // obtener los huéspedes
+            String query = "SELECT passport, Nombre1, Nombre2, Apellido1, Apellido2 FROM huesped";
+            Statement stmt = conn.createStatement();
 
-            // Ejecutar la llamada
-            ResultSet resultSet = stmt.executeQuery();
+            // Ejecutar la consulta
+            ResultSet resultSet = stmt.executeQuery(query);
 
             // Establecer el modelo de la tabla con los datos obtenidos
             table.setModel(buildTableModel(resultSet));
         } catch (SQLException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error al cargar las reservaciones");
+            JOptionPane.showMessageDialog(this, "Error al cargar los huéspedes");
         }
     }
 
@@ -79,8 +82,8 @@ public class MostrarReservacion extends JFrame {
     // Método principal para ejecutar la aplicación
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            MostrarReservacion mostrarReservacion = new MostrarReservacion(); // Usar el nombre correcto de la clase
-            mostrarReservacion.setVisible(true); // Mostrar la ventana
+            MostrarHuesped mostrarHuesped = new MostrarHuesped(); // Usar el nombre correcto de la clase
+            mostrarHuesped.setVisible(true); // Mostrar la ventana
         });
     }
 }

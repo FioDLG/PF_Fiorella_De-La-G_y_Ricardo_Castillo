@@ -5,7 +5,6 @@ import java.sql.*;
 
 public class huesped {
 
-    // Componentes de la interfaz gráfica
     private JFrame frame;
     private JTextField passportField, nombre1Field, nombre2Field, apellido1Field, apellido2Field;
     private JButton agregarButton;
@@ -16,11 +15,14 @@ public class huesped {
     private static final String PASSWORD = "myrf0424";
 
     public huesped() {
-        // Crear la ventana
+        // Crear la ventana de registro
         frame = new JFrame("Agregar Huésped");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(400, 300);
         frame.setLayout(new GridLayout(6, 2));
+
+        // Centrar la ventana en la pantalla
+        frame.setLocationRelativeTo(null);
 
         // Crear los campos de texto
         passportField = new JTextField();
@@ -50,6 +52,14 @@ public class huesped {
         agregarButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 agregarHuesped();
+            }
+        });
+
+        // Agregar el manejador para cerrar la ventana y abrir el menú
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                openMenu(); // Abrir el menú cuando se cierra la ventana
             }
         });
 
@@ -96,17 +106,31 @@ public class huesped {
             nombre2Field.setText("");
             apellido1Field.setText("");
             apellido2Field.setText("");
+
+            // Cerrar la ventana de registro
+            frame.dispose();
+
+            // Abrir el menú después de agregar el huésped
+            openMenu();
+
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(frame, "Error al agregar huésped: " + ex.getMessage(), "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
     }
 
+    private void openMenu() {
+        // Crear y mostrar el menú
+        Menu menu = new Menu(); // Asegúrate de tener una clase Menu definida
+        menu.setVisible(true);
+    }
+
     public static void main(String[] args) {
-        // Iniciar la aplicación
+        // Ejecutar la aplicación
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
-                new huesped();
+                new huesped(); // Crear una nueva instancia de la clase huesped
             }
         });
     }

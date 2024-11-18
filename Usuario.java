@@ -87,6 +87,7 @@ public class Usuario extends JFrame {
                     dispose(); // Cierra la ventana de inicio de sesión
                     Menu menu = new Menu();
                     menu.setVisible(true); // Muestra el menú principal
+
                 } else {
                     JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos");
                 }

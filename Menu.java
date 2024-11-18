@@ -1,13 +1,13 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Menu extends JFrame {
 
-    public class DatabaseConnector {
+    // Clase interna para la conexión a la base de datos
+    public static class DatabaseConnector {
         private static final String DB_URL = "jdbc:mysql://localhost:3306/reservas_villa_mon_coeur";
         private static final String DB_USER = "root";
         private static final String DB_PASSWORD = "myrf0424";
@@ -47,6 +47,8 @@ public class Menu extends JFrame {
         backgroundPanel.add(btnReservar, gbc);
 
         btnReservar.addActionListener(e -> {
+            // Cerrar el menú y abrir la ventana de reservación
+            setVisible(false);
             Reservacion hacerReservacion = new Reservacion();
             hacerReservacion.setVisible(true);
         });
@@ -60,6 +62,8 @@ public class Menu extends JFrame {
         backgroundPanel.add(btnAgregarVuelo, gbc);
 
         btnAgregarVuelo.addActionListener(e -> {
+            // Cerrar el menú y abrir la ventana de agregar vuelo
+            setVisible(false);
             InfoVuelo agregarVuelo = new InfoVuelo();
             agregarVuelo.setVisible(true);
         });
@@ -73,6 +77,8 @@ public class Menu extends JFrame {
         backgroundPanel.add(btnVerReservaciones, gbc);
 
         btnVerReservaciones.addActionListener(e -> {
+            // Cerrar el menú y abrir la ventana de ver reservaciones
+            setVisible(false);
             MostrarReservacion verReservaciones = new MostrarReservacion();
             verReservaciones.setVisible(true);
         });
@@ -86,6 +92,8 @@ public class Menu extends JFrame {
         backgroundPanel.add(btnEliminarReservacion, gbc);
 
         btnEliminarReservacion.addActionListener(e -> {
+            // Cerrar el menú y abrir la ventana de eliminar reservación
+            setVisible(false);
             Eliminar eliminarReservacion = new Eliminar();
             eliminarReservacion.setVisible(true);
         });
@@ -98,9 +106,27 @@ public class Menu extends JFrame {
         gbc.gridy = 5; // Establecer la fila para el botón
         backgroundPanel.add(btnAgregarHuesped, gbc);
 
-        // Añadir acción al botón
+        // Acción del botón "Agregar un Huésped"
         btnAgregarHuesped.addActionListener(e -> {
+            // Cerrar el menú y abrir la ventana de agregar huésped
+            setVisible(false);
             new huesped();
+        });
+
+        // Crear el botón "Mostrar Huésped"
+        JButton btnMostrarHuesped = new JButton("Mostrar Huésped");
+        btnMostrarHuesped.setBackground(new Color(243, 212, 142));
+        btnMostrarHuesped.setForeground(Color.WHITE);
+        btnMostrarHuesped.setFocusPainted(false);
+        gbc.gridy = 6; // Establecer la fila para el botón
+        backgroundPanel.add(btnMostrarHuesped, gbc);
+
+        // Acción del botón "Mostrar Huésped"
+        btnMostrarHuesped.addActionListener(e -> {
+            // Cerrar el menú y abrir la ventana para mostrar los huéspedes
+            setVisible(false);
+            MostrarHuesped MostrarHuesped = new MostrarHuesped();
+            MostrarHuesped.setVisible(true);
         });
 
         // Agregar el panel de fondo a la ventana principal
@@ -116,7 +142,8 @@ public class Menu extends JFrame {
 
         public BackgroundPanel() {
             // Cargar la imagen desde el archivo
-            backgroundImage = new ImageIcon("imagenes/menu.jpg").getImage();
+            backgroundImage = new ImageIcon("imagenes/menu.jpg").getImage(); // Asegúrate de que la imagen esté en la
+                                                                             // ruta correcta
         }
 
         @Override
@@ -131,7 +158,7 @@ public class Menu extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new Menu();
+            new Menu(); // Iniciar el menú
         });
     }
 }

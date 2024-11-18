@@ -37,7 +37,13 @@ public class Eliminar extends JFrame {
 
         eliminarButton.addActionListener(e -> {
             try {
-                int id = Integer.parseInt(idField.getText());
+                String inputText = idField.getText();
+                if (inputText.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Por favor, ingrese un número para la reservación.");
+                    return;
+                }
+
+                int id = Integer.parseInt(inputText);
                 eliminarReservacion(id);
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Por favor, ingrese un número válido para la reservación.");
@@ -48,15 +54,19 @@ public class Eliminar extends JFrame {
     }
 
     private void eliminarReservacion(int id) {
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            String query = "{ CALL Borrar_reserva(?) }";
-            CallableStatement statement = conn.prepareCall(query);
+        String query = "{ CALL Borrar_reserva(?) }"; // Llamada al procedimiento almacenado
+
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+                CallableStatement statement = conn.prepareCall(query)) {
+
+            // Establecer el valor del parámetro del procedimiento almacenado
             statement.setInt(1, id);
 
+            // Ejecutar la actualización
             int rowsAffected = statement.executeUpdate();
 
             if (rowsAffected > 0) {
-                JOptionPane.showMessageDialog(this, "Reservación eliminada exitosamente");
+                JOptionPane.showMessageDialog(this, "Reservación eliminada exitosamente.");
             } else {
                 JOptionPane.showMessageDialog(this, "No se encontró la reservación con ID: " + id);
             }
@@ -64,5 +74,13 @@ public class Eliminar extends JFrame {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error al eliminar la reservación: " + e.getMessage());
         }
+    }
+
+    // Método principal para ejecutar la ventana
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            Eliminar eliminar = new Eliminar();
+            eliminar.setVisible(true);
+        });
     }
 }
