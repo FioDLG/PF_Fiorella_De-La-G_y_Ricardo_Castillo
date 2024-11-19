@@ -15,12 +15,10 @@ public class Reservacion extends JFrame {
         setSize(600, 400);
         setLocationRelativeTo(null);
 
-        // Panel para el formulario de reserva
+        // Formulario de reserva
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
-
-        // Campos del formulario
         JLabel pasaporteLabel = new JLabel("Pasaporte:");
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -60,34 +58,27 @@ public class Reservacion extends JFrame {
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Obtener los valores ingresados por el usuario
                 String pasaporte = pasaporteField.getText();
                 int cantidadDias = Integer.parseInt(cantidadDiasField.getText());
                 int cantidadPersonas = Integer.parseInt(cantidadPersonasField.getText());
-
-                // Llamar al método para guardar la reserva
                 if (guardarReserva(pasaporte, cantidadDias, cantidadPersonas)) {
                     JOptionPane.showMessageDialog(null, "Reserva realizada con éxito");
-                    cerrarVentana(); // Cerrar la ventana de reserva y abrir el menú
+                    cerrarVentana();
                 } else {
                     JOptionPane.showMessageDialog(null, "Error al realizar la reserva");
                 }
             }
         });
 
-        // Agregar el panel al JFrame
         add(panel);
     }
 
     private boolean guardarReserva(String pasaporte, int cantidadDias, int cantidadPersonas) {
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            // Llamar al procedimiento almacenado 'New_reserva'
             CallableStatement stmt = conn.prepareCall("{CALL New_reserva(?, ?, ?)}");
-            stmt.setString(1, pasaporte); // Pasaporte
-            stmt.setInt(2, cantidadDias); // Cantidad de días
-            stmt.setInt(3, cantidadPersonas); // Cantidad de personas
-
-            // Ejecutar el procedimiento
+            stmt.setString(1, pasaporte);
+            stmt.setInt(2, cantidadDias);
+            stmt.setInt(3, cantidadPersonas);
             stmt.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -96,14 +87,12 @@ public class Reservacion extends JFrame {
         }
     }
 
-    // Método para cerrar la ventana y abrir el menú
     private void cerrarVentana() {
-        this.setVisible(false); // Ocultar la ventana de reserva
-        Menu menu = new Menu(); // Crear una nueva instancia del menú
-        menu.setVisible(true); // Mostrar el menú
+        this.setVisible(false);
+        Menu menu = new Menu();
+        menu.setVisible(true);
     }
 
-    // Método principal para ejecutar la aplicación
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             Reservacion reserva = new Reservacion();

@@ -13,8 +13,8 @@ public class MostrarReservacion extends JFrame {
 
     public MostrarReservacion() {
         setTitle("Ver Reservaciones");
-        setSize(800, 400); // Ajusté el tamaño para más comodidad
-        setLocationRelativeTo(null); // Centra la ventana
+        setSize(800, 400);
+        setLocationRelativeTo(null);
 
         // Crear el panel y la tabla
         JPanel panel = new JPanel(new BorderLayout());
@@ -22,28 +22,19 @@ public class MostrarReservacion extends JFrame {
         JScrollPane scrollPane = new JScrollPane(table);
         panel.add(scrollPane, BorderLayout.CENTER);
         add(panel);
-
-        // Mostrar las reservaciones en la tabla
         mostrarReservaciones(table);
-
-        // Agregar el listener para cerrar la ventana y abrir el menú
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                new Menu(); // Crear una nueva instancia de Menu
+                new Menu();
             }
         });
     }
 
     private void mostrarReservaciones(JTable table) {
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            // Llamar al procedimiento almacenado 'Mostrar_reserva_infovuelo'
             CallableStatement stmt = conn.prepareCall("{CALL Mostrar_reserva_infovuelo()}");
-
-            // Ejecutar la llamada
             ResultSet resultSet = stmt.executeQuery();
-
-            // Establecer el modelo de la tabla con los datos obtenidos
             table.setModel(buildTableModel(resultSet));
         } catch (SQLException e) {
             e.printStackTrace();
@@ -51,18 +42,15 @@ public class MostrarReservacion extends JFrame {
         }
     }
 
-    // Método para construir el modelo de la tabla a partir de un ResultSet
     public static DefaultTableModel buildTableModel(ResultSet rs) throws SQLException {
         ResultSetMetaData metaData = rs.getMetaData();
         int columnCount = metaData.getColumnCount();
 
-        // Obtener los nombres de las columnas
         Vector<String> columnNames = new Vector<>(columnCount);
         for (int column = 1; column <= columnCount; column++) {
             columnNames.add(metaData.getColumnName(column));
         }
 
-        // Obtener los datos de las filas
         Vector<Vector<Object>> data = new Vector<>();
         while (rs.next()) {
             Vector<Object> vector = new Vector<>(columnCount);
@@ -72,15 +60,13 @@ public class MostrarReservacion extends JFrame {
             data.add(vector);
         }
 
-        // Crear y retornar el modelo de la tabla
         return new DefaultTableModel(data, columnNames);
     }
 
-    // Método principal para ejecutar la aplicación
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            MostrarReservacion mostrarReservacion = new MostrarReservacion(); // Usar el nombre correcto de la clase
-            mostrarReservacion.setVisible(true); // Mostrar la ventana
+            MostrarReservacion mostrarReservacion = new MostrarReservacion();
+            mostrarReservacion.setVisible(true);
         });
     }
 }

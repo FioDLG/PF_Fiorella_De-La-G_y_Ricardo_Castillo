@@ -16,12 +16,10 @@ public class InfoVuelo extends JFrame {
         setSize(600, 500);
         setLocationRelativeTo(null);
 
-        // Panel para el formulario de información del vuelo
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
 
-        // Campos del formulario
         JLabel pasaporteLabel = new JLabel("Pasaporte:");
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -97,7 +95,6 @@ public class InfoVuelo extends JFrame {
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Obtener los valores ingresados por el usuario
                 String pasaporte = pasaporteField.getText();
                 int nVuelo = Integer.parseInt(nVueloField.getText());
                 String aerolinea = aerolineaField.getText();
@@ -106,25 +103,24 @@ public class InfoVuelo extends JFrame {
                 String horaSalida = horaSalidaField.getText();
                 String lugarSalida = lugarSalidaField.getText();
 
-                // Llamar al método para guardar la información del vuelo
+                // Se llama al método para guardar la información del vuelo
                 if (guardarInfoVuelo(pasaporte, nVuelo, aerolinea, horaLlegada, lugarLlegada, horaSalida,
                         lugarSalida)) {
                     JOptionPane.showMessageDialog(null, "Información del vuelo guardada con éxito");
-                    cerrarVentana(); // Cerrar la ventana actual y abrir el menú
+                    cerrarVentana();
                 } else {
                     JOptionPane.showMessageDialog(null, "Error al guardar la información del vuelo");
                 }
             }
         });
 
-        // Agregar el panel al JFrame
         add(panel);
     }
 
     private boolean guardarInfoVuelo(String pasaporte, int nVuelo, String aerolinea, String horaLlegada,
             String lugarLlegada, String horaSalida, String lugarSalida) {
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            // Llamar al procedimiento almacenado 'New_infoVuelo'
+            // Se llama al procedimiento almacenado "New_infoVuelo"
             CallableStatement stmt = conn.prepareCall("{CALL New_infoVuelo(?, ?, ?, ?, ?, ?, ?)}");
             stmt.setString(1, pasaporte); // Pasaporte
             stmt.setInt(2, nVuelo); // Número de vuelo
@@ -134,7 +130,6 @@ public class InfoVuelo extends JFrame {
             stmt.setString(6, horaSalida); // Hora de salida
             stmt.setString(7, lugarSalida); // Lugar de salida
 
-            // Ejecutar el procedimiento
             stmt.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -143,7 +138,6 @@ public class InfoVuelo extends JFrame {
         }
     }
 
-    // Método principal para ejecutar la aplicación
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             InfoVuelo infoVuelo = new InfoVuelo();
@@ -151,10 +145,9 @@ public class InfoVuelo extends JFrame {
         });
     }
 
-    // Método para cerrar la ventana y abrir el menú
     public void cerrarVentana() {
-        this.dispose(); // Cierra la ventana actual de InfoVuelo
-        Menu menu = new Menu(); // Crea una nueva instancia del menú
-        menu.setVisible(true); // Muestra el menú
+        this.dispose();
+        Menu menu = new Menu();
+        menu.setVisible(true);
     }
 }

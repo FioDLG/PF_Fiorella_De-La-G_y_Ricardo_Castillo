@@ -20,11 +20,8 @@ public class huesped {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(400, 300);
         frame.setLayout(new GridLayout(6, 2));
-
-        // Centrar la ventana en la pantalla
         frame.setLocationRelativeTo(null);
 
-        // Crear los campos de texto
         passportField = new JTextField();
         nombre1Field = new JTextField();
         nombre2Field = new JTextField();
@@ -34,7 +31,6 @@ public class huesped {
         // Crear el botón para agregar el huésped
         agregarButton = new JButton("Agregar Huésped");
 
-        // Agregar los componentes al frame
         frame.add(new JLabel("Passport:"));
         frame.add(passportField);
         frame.add(new JLabel("Nombre 1:"));
@@ -45,37 +41,32 @@ public class huesped {
         frame.add(apellido1Field);
         frame.add(new JLabel("Apellido 2:"));
         frame.add(apellido2Field);
-        frame.add(new JLabel()); // Fila vacía
+        frame.add(new JLabel());
         frame.add(agregarButton);
 
-        // Agregar el manejador de eventos para el botón
         agregarButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 agregarHuesped();
             }
         });
 
-        // Agregar el manejador para cerrar la ventana y abrir el menú
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                openMenu(); // Abrir el menú cuando se cierra la ventana
+                openMenu();
             }
         });
-
-        // Mostrar la ventana
         frame.setVisible(true);
     }
 
     private void agregarHuesped() {
-        // Obtener los valores ingresados
         String passport = passportField.getText();
         String nombre1 = nombre1Field.getText();
         String nombre2 = nombre2Field.getText();
         String apellido1 = apellido1Field.getText();
         String apellido2 = apellido2Field.getText();
 
-        // Validar los campos
+        // Validar los campos no nulleables
         if (passport.isEmpty() || nombre1.isEmpty() || apellido1.isEmpty()
                 || apellido2.isEmpty()) {
             JOptionPane.showMessageDialog(frame, "Hay campos que deben ser llenados.", "Error",
@@ -85,32 +76,25 @@ public class huesped {
 
         // Llamar al procedimiento almacenado para agregar el huésped
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
-            // Preparar la llamada al procedimiento almacenado
             CallableStatement stmt = conn.prepareCall("{CALL New_huesped(?, ?, ?, ?, ?)}");
 
-            // Establecer los parámetros del procedimiento
             stmt.setString(1, passport);
             stmt.setString(2, nombre1);
             stmt.setString(3, nombre2);
             stmt.setString(4, apellido1);
             stmt.setString(5, apellido2);
 
-            // Ejecutar la llamada
             stmt.executeUpdate();
             JOptionPane.showMessageDialog(frame, "Huésped agregado exitosamente.", "Éxito",
                     JOptionPane.INFORMATION_MESSAGE);
 
-            // Limpiar los campos después de agregar el huésped
             passportField.setText("");
             nombre1Field.setText("");
             nombre2Field.setText("");
             apellido1Field.setText("");
             apellido2Field.setText("");
 
-            // Cerrar la ventana de registro
             frame.dispose();
-
-            // Abrir el menú después de agregar el huésped
             openMenu();
 
         } catch (SQLException ex) {
@@ -121,16 +105,15 @@ public class huesped {
 
     private void openMenu() {
         // Crear y mostrar el menú
-        Menu menu = new Menu(); // Asegúrate de tener una clase Menu definida
+        Menu menu = new Menu();
         menu.setVisible(true);
     }
 
     public static void main(String[] args) {
-        // Ejecutar la aplicación
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new huesped(); // Crear una nueva instancia de la clase huesped
+                new huesped();
             }
         });
     }

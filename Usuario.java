@@ -84,9 +84,9 @@ public class Usuario extends JFrame {
 
                 if (checkCredentials(username, password)) {
                     JOptionPane.showMessageDialog(null, "Inicio de sesión exitoso");
-                    dispose(); // Cierra la ventana de inicio de sesión
+                    dispose();
                     Menu menu = new Menu();
-                    menu.setVisible(true); // Muestra el menú principal
+                    menu.setVisible(true);
 
                 } else {
                     JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos");

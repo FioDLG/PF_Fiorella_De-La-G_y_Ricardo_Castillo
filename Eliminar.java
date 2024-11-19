@@ -50,8 +50,6 @@ public class Eliminar extends JFrame {
                 }
 
                 eliminarReservacion(id);
-
-                // Después de eliminar, cerrar la ventana y abrir el menú
                 dispose();
                 new Menu().setVisible(true);
             } catch (NumberFormatException ex) {
