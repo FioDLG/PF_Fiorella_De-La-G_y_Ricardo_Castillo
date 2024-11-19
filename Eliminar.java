@@ -44,7 +44,16 @@ public class Eliminar extends JFrame {
                 }
 
                 int id = Integer.parseInt(inputText);
+                if (!verificarExistenciaReservacion(id)) {
+                    JOptionPane.showMessageDialog(this, "No se encontró la reservación con ID: " + id);
+                    return;
+                }
+
                 eliminarReservacion(id);
+
+                // Después de eliminar, cerrar la ventana y abrir el menú
+                dispose();
+                new Menu().setVisible(true);
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Por favor, ingrese un número válido para la reservación.");
             }
@@ -54,29 +63,37 @@ public class Eliminar extends JFrame {
     }
 
     private void eliminarReservacion(int id) {
-        String query = "{ CALL Borrar_reserva(?) }"; // Llamada al procedimiento almacenado
+        String query = "{ CALL Borrar_reserva(?) }";
 
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
                 CallableStatement statement = conn.prepareCall(query)) {
 
-            // Establecer el valor del parámetro del procedimiento almacenado
             statement.setInt(1, id);
+            statement.execute();
+            JOptionPane.showMessageDialog(this, "Reservación eliminada exitosamente.");
 
-            // Ejecutar la actualización
-            int rowsAffected = statement.executeUpdate();
-
-            if (rowsAffected > 0) {
-                JOptionPane.showMessageDialog(this, "Reservación eliminada exitosamente.");
-            } else {
-                JOptionPane.showMessageDialog(this, "No se encontró la reservación con ID: " + id);
-            }
         } catch (SQLException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error al eliminar la reservación: " + e.getMessage());
         }
     }
 
-    // Método principal para ejecutar la ventana
+    private boolean verificarExistenciaReservacion(int id) {
+        String query = "SELECT COUNT(*) FROM reserva WHERE Nreserva = ?";
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+                PreparedStatement statement = conn.prepareStatement(query)) {
+
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next() && resultSet.getInt(1) > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al verificar la reservación: " + e.getMessage());
+        }
+        return false;
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             Eliminar eliminar = new Eliminar();
